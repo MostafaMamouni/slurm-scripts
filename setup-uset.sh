@@ -5,7 +5,7 @@ GREEN="\033[1;32m"
 NOCOLOR="\033[0m"
 
 
-if [ $1 == "-h"]; then
+if [ $1 == "-h" ]; then
 		echo "usage: ./create_users_account username [--dacc defaultaccount cpuhours] [--acc account cpuhours] [--qos qos]"
 		exit 0
 fi
@@ -32,44 +32,44 @@ while [ : ];do
 			echo acc option requires an argument
 			exit 1
 		fi
-		if [ ! $3 ] ; then
-			echo dacc option requires a second argument cpuhours
-			exit 1
+		echo $3
+		if [[ $3 =~ [0-9] ]]; then
+			echo salam
+			ACPUHOURS=$3
+			shift 1
 		fi
-		if [[ "$3" =~ [^0-9] ]]; then
-			echo error: cpuhours should be a number
-			exit 1
-		fi
-		ACPUHOURS=$3
-		shift 1
-		ACCOINT=$2
+		argrexist=true
+		ACCOUNT=$2
 	elif [ "$1" == "--dacc" ]; then
 		if [ ! $2 ] || [[ "$2" == [^\-\-] ]]; then
 			echo dacc option requires an argument
 			exit 1
 		fi
-		if [ ! $3 ] ; then
-			echo dacc option requires a second argument cpuhours
-			exit 1
+		if [[ $3 =~ [0-9] ]]; then
+			DACPUHOURS=$3
+			shift 1
 		fi
-		if [[ "$3" =~ [^0-9] ]]; then
-			echo error: cpuhours should be a number
-			exit 1
-		fi
-		DACPUHOURS=$3
-		shift 1
+		argrexist=true
 		DEFAULTACCOUNT="$2-account"
 	elif [ "$1" == "--qos" ]; then
 		if [ ! $2 ] || [[ "$2" == [^\-\-] ]]; then
 			echo qos option requires an argument
 			exit 1
 		fi
+		argrexist=true
 		QOS=$2
 	else
 		break
 	fi
 	shift 2
 done
+
+
+if [ ! $argrexist ] ; then
+	echo too few arguments
+	echo "usage: ./create_users_account username [--dacc defaultaccount cpuhours] [--acc account cpuhours] [--qos qos]"
+	exit 1
+fi
 
 if [ $ACCOUNT ]; then
 	echo -e "${GREEN}"
